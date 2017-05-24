@@ -4,7 +4,7 @@ Beta ver 1.0
   
 HSPI only.  
   
-(example)
+(example)  
 SCLK-----GPIO #14  
 MOSI-----GPIO #13  
 MISO-----NONE  
