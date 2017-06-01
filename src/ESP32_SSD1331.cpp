@@ -1,6 +1,6 @@
 /*
   ESP32_SSD1331.cpp - for Arduino core for the ESP32 ( Use SPI library ).
-  Beta version 1.0
+  Beta version 1.1
   
 The MIT License (MIT)
 
@@ -192,6 +192,8 @@ void ESP32_SSD1331::SSD1331_Copy(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1,
 //********* OLED フォント出力 ********************
 void ESP32_SSD1331::SSD1331_8x16_Font_DisplayOut(uint8_t txtMax, uint8_t x0, uint8_t y0, uint8_t red, uint8_t green, uint8_t blue, uint8_t Fnt[][16]){
   uint8_t com[6];
+  
+  if( txtMax > 12) txtMax = 12;
   com[0] = 0x15; //Set Column Address
     com[1] = x0;
     com[2] = x0 + (8*txtMax) - 1;
@@ -534,31 +536,24 @@ void ESP32_SSD1331::Drawing_Circle_Fill(uint8_t x0, uint8_t y0, uint16_t r, uint
   }
 }
 //*********電光掲示板風スクロール 8x16ドット********************
-bool ESP32_SSD1331::Scroller_RtoL2(uint8_t Zen_or_Han, uint8_t fnt_buf[2][16], uint8_t* scl_cnt1, uint8_t col_R, uint8_t col_G, uint8_t col_B){
-  int8_t i;
+bool ESP32_SSD1331::Scroller_8x16_RtoL(uint8_t y0, uint8_t Zen_or_Han, uint8_t fnt_buf[16], uint8_t* scl_cnt1, uint8_t *ZorH_cnt, uint8_t col_R, uint8_t col_G, uint8_t col_B){
 
-  if(*scl_cnt1 == 0){
-    for(i=0; i<16; i++){
-      _dummy_fnt_buf[i] = fnt_buf[_fnt_cnt][i];
-    }
-  }
-
-  Copy_Scroll(_dummy_fnt_buf, *scl_cnt1, col_R, col_G, col_B);
+  Copy_Scroll(y0, fnt_buf, *scl_cnt1, col_R, col_G, col_B);
 
   (*scl_cnt1)++;
 
   if(*scl_cnt1 == 8){
     *scl_cnt1 = 0;
     if(Zen_or_Han == 2){
-      if(_fnt_cnt == 0){
-        _fnt_cnt = 1;
+      if(*ZorH_cnt == 0){
+        *ZorH_cnt = 1;
         return false;
       }else{
-        _fnt_cnt = 0;
+        *ZorH_cnt = 0;
         return true;
       }
     }else{
-      _fnt_cnt = 0;
+      *ZorH_cnt = 0;
       return true;
     }
   }
@@ -566,18 +561,18 @@ bool ESP32_SSD1331::Scroller_RtoL2(uint8_t Zen_or_Han, uint8_t fnt_buf[2][16], u
   return false;
 }
 //***************************
-void ESP32_SSD1331::Copy_Scroll(uint8_t buf[16], uint8_t scl_cnt2, uint8_t col_R, uint8_t col_G, uint8_t col_B){
+void ESP32_SSD1331::Copy_Scroll(uint8_t y0, uint8_t buf[16], uint8_t scl_cnt2, uint8_t col_R, uint8_t col_G, uint8_t col_B){
   uint8_t Dot = (col_R << 5) | (col_G << 2) | col_B;
 
-  SSD1331_Copy(1, 0, 95, 15, 0, 0);
+  SSD1331_Copy(1, y0, 95, y0 + 15, 0, y0);
 
   uint8_t com[6];
   com[0] = 0x15; //Set Column Address
     com[1] = 95;
     com[2] = 95;
   com[3] = 0x75; //Set Row Address
-    com[4] = 0;
-    com[5] = 15;
+    com[4] = y0;
+    com[5] = y0 + 15;
 
   CommandWriteBytes(com, 6);
 

@@ -20,3 +20,4 @@ Drawing_Rectangle_Fill	KEYWORD2
 Drawing_Circle_Line_256color	KEYWORD2
 Drawing_Circle_Line_65kColor	KEYWORD2
 Drawing_Circle_Fill	KEYWORD2
+Scroller_8x16_RtoL	KEYWORD2
