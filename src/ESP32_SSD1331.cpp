@@ -1,6 +1,6 @@
 /*
   ESP32_SSD1331.cpp - for Arduino core for the ESP32 ( Use SPI library ).
-  Beta version 1.1
+  Beta version 1.2
   
 The MIT License (MIT)
 
@@ -554,6 +554,31 @@ bool ESP32_SSD1331::Scroller_8x16_RtoL(uint8_t y0, uint8_t Zen_or_Han, uint8_t f
       }
     }else{
       *ZorH_cnt = 0;
+      return true;
+    }
+  }
+
+  return false;
+}
+//*********電光掲示板風スクロール 8x16ドット********************
+bool ESP32_SSD1331::Scroller_8x16_RtoL4line(uint8_t y0, uint8_t num, uint8_t Zen_or_Han, uint8_t fnt_buf[2][16], uint8_t col_R, uint8_t col_G, uint8_t col_B){
+
+  Copy_Scroll(y0, fnt_buf[_ZorH_cnt[num]], _scl_cnt[num], col_R, col_G, col_B);
+
+  _scl_cnt[num]++;
+
+  if(_scl_cnt[num] == 8){
+    _scl_cnt[num] = 0;
+    if(Zen_or_Han == 2){
+      if(_ZorH_cnt[num] == 0){
+        _ZorH_cnt[num] = 1;
+        return false;
+      }else{
+        _ZorH_cnt[num] = 0;
+        return true;
+      }
+    }else{
+      _ZorH_cnt[num] = 0;
       return true;
     }
   }

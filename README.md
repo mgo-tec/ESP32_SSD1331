@@ -1,6 +1,6 @@
 # ESP32_SSD1331
 This is Arduino core for the ESP32 library ( SPI ).  
-Beta ver 1.1  
+Beta ver 1.2 
   
 HSPI only.  
   
@@ -15,17 +15,24 @@ RST------GPIO #4
 Use SPI.h library  
   
 # Change log
+(1.2)  
+Add the following function.  
+- Scroller_8x16_RtoL4line  
+  
 (1.1)  
 Corrected scroll function of electric bulletin board.  
 - Scroller_8x16_RtoL  
   
 【更新履歴】(Japanese)  
+(1.2)  
+以下の関数を追加しました。
+- Scroller_8x16_RtoL4line  
+  
 (1.1)  
 電光掲示板風スクロール関数を修正しました。  
 - Scroller_8x16_RtoL  
   
   
-
 The MIT License (MIT)  
   
 MITライセンス  
