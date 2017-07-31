@@ -1,6 +1,6 @@
 /*
   ESP32_SSD1331.cpp - for Arduino core for the ESP32 ( Use SPI library ).
-  Beta version 1.2
+  Beta version 1.3
   
 The MIT License (MIT)
 
@@ -171,13 +171,15 @@ void ESP32_SSD1331::Brightness_FadeOut(uint8_t interval){
 }
 //***********ディスプレイ消去***************************
 void ESP32_SSD1331::Display_Clear(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1){
-  delayMicroseconds(500); //クリアーコマンドは400μs 以上の休止期間が必要かも
+  //delayMicroseconds(500); //クリアーコマンドは400μs 以上の休止期間が必要かも
+  delay(1);
   CommandWrite(0x25); //Clear Window
     CommandWrite(x0); //Column Address of Start
     CommandWrite(y0); //Row Address of Start
     CommandWrite(x1); //Column Address of End
     CommandWrite(y1); //Row Address of End
-  delayMicroseconds(800); //ここの間隔は各自調節してください。
+  //delayMicroseconds(800); //ここの間隔は各自調節してください。
+  delay(1);
 }
 //********** 範囲コピー *********************************
 void ESP32_SSD1331::SSD1331_Copy(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t X, uint8_t Y){
@@ -185,9 +187,11 @@ void ESP32_SSD1331::SSD1331_Copy(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1,
   buf[0] = 0x23; //Copy Command
   buf[1] = x0; buf[2] = y0; buf[3] = x1; buf[4] = y1; buf[5] = X; buf[6] = Y; 
 
-  delayMicroseconds(500);
+  //delayMicroseconds(500);
+  delay(1);
   CommandWriteBytes(buf, sizeof(buf)); 
-  delayMicroseconds(500);
+  //delayMicroseconds(500);
+  delay(1);
 }
 //********* OLED フォント出力 ********************
 void ESP32_SSD1331::SSD1331_8x16_Font_DisplayOut(uint8_t txtMax, uint8_t x0, uint8_t y0, uint8_t red, uint8_t green, uint8_t blue, uint8_t Fnt[][16]){
@@ -579,6 +583,31 @@ bool ESP32_SSD1331::Scroller_8x16_RtoL4line(uint8_t y0, uint8_t num, uint8_t Zen
       }
     }else{
       _ZorH_cnt[num] = 0;
+      return true;
+    }
+  }
+
+  return false;
+}
+
+bool ESP32_SSD1331::Scroller_8x16_RtoL4line(uint8_t y0, uint8_t num, uint8_t Zen_or_Han, uint8_t *SclCnt, uint8_t *ZorHcnt, uint8_t fnt_buf[2][16], uint8_t col_R, uint8_t col_G, uint8_t col_B){
+
+  Copy_Scroll(y0, fnt_buf[*ZorHcnt], *SclCnt, col_R, col_G, col_B);
+
+  *SclCnt = *SclCnt + 1;
+
+  if(*SclCnt == 8){
+    *SclCnt = 0;
+    if(Zen_or_Han == 2){
+      if(*ZorHcnt == 0){
+        *ZorHcnt = 1;
+        return false;
+      }else{
+        *ZorHcnt = 0;
+        return true;
+      }
+    }else{
+      *ZorHcnt = 0;
       return true;
     }
   }
