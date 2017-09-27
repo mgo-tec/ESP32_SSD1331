@@ -1,7 +1,6 @@
 # ESP32_SSD1331
 This is Arduino core for the ESP32 library ( SPI ).  
-Beta ver 1.3  
-  
+Beta ver 1.4
 HSPI only.  
   
 (example)  
@@ -9,12 +8,16 @@ SCLK-----GPIO #14
 MOSI-----GPIO #13  
 MISO-----NONE  
 CS-------GPIO #15  
-D/C------GPIO #16  
+D/C------GPIO #21  
 RST------GPIO #4  
   
 Use SPI.h library  
   
 # Change log
+(1.4)  
+Added function to display 8X8 dot Japanese kanji font.  
+- SSD1331_8x8_Font_DisplayOut
+  
 (1.3)  
 Since delay microseconds can not be used in ESP32 multitasking, we modified it to delay (1).  
 In addition, another argument of the following function is added.  
@@ -29,6 +32,10 @@ Corrected scroll function of electric bulletin board.
 - Scroller_8x16_RtoL  
   
 【更新履歴】(Japanese)  
+(1.4)  
+８×８ドットの美咲フォントを表示させるための関数を追加。  
+- SSD1331_8x8_Font_DisplayOut
+  
 (1.3)  
 ESP32 のマルチタスクでは delayMicroseconds が使えない為、delay(1)に修正しました。  
 その他、以下の関数の別引数を追加  

@@ -8,6 +8,7 @@ Brightness	KEYWORD2
 Brightness_FadeIn	KEYWORD2
 Brightness_FadeOut	KEYWORD2
 SSD1331_8x16_Font_DisplayOut	KEYWORD2
+SSD1331_8x8_Font_DisplayOut	KEYWORD2
 SSD1331_Copy	KEYWORD2
 Display_Clear	KEYWORD2
 Time_Copy_V_Scroll	KEYWORD2
