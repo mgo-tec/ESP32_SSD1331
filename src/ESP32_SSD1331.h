@@ -1,6 +1,6 @@
 /*
   ESP32_SSD1331.h - for Arduino core for the ESP32 ( Use SPI library ).
-  Beta version 1.4
+  Beta version 1.5
   
 The MIT License (MIT)
 
@@ -52,6 +52,7 @@ public:
   ESP32_SSD1331(uint8_t sck, uint8_t miso, uint8_t mosi, uint8_t cs, uint8_t dc, uint8_t rst);
 
   void SSD1331_Init();
+  void SSD1331_Init(bool bl, uint8_t cs1, uint8_t cs2, uint8_t cs3);
   void CommandWrite(uint8_t b);
   void DataWrite(uint8_t b);
   void CommandWriteBytes(uint8_t *b, uint16_t n);
@@ -60,8 +61,10 @@ public:
   void Brightness_FadeIn(uint8_t interval);
   void Brightness_FadeOut(uint8_t interval);
   void Display_Clear(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1);
+  void Display_Clear(uint8_t cs, uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1);
   void SSD1331_Copy(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t X, uint8_t Y);
   void SSD1331_8x16_Font_DisplayOut(uint8_t txtMax, uint8_t x0, uint8_t y0, uint8_t red, uint8_t green, uint8_t blue, uint8_t Fnt[][16]);
+  void SSD1331_8x16_Font_DisplayOut(uint8_t cs, uint8_t txtMax, uint8_t x0, uint8_t y0, uint8_t red, uint8_t green, uint8_t blue, uint8_t Fnt[][16]);
   void SSD1331_8x8_Font_DisplayOut(uint8_t txtMax, uint8_t x0, uint8_t y0, uint8_t red, uint8_t green, uint8_t blue, uint8_t Fnt[][8]);
   void Time_Copy_V_Scroll(uint8_t Direction, uint8_t ZorH, uint8_t buf[2][16], uint8_t *SclCnt, uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t col_R, uint8_t col_G, uint8_t col_B);
   void Time_Copy_H_Scroll(uint8_t Direction, uint8_t ZorH, uint8_t buf[2][16], uint8_t *SclCnt, uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t col_R, uint8_t col_G, uint8_t col_B);
@@ -76,6 +79,7 @@ public:
   bool Scroller_8x16_RtoL(uint8_t y0, uint8_t Zen_or_Han, uint8_t fnt_buf[16], uint8_t *scl_cnt1, uint8_t *ZorH_cnt, uint8_t col_R, uint8_t col_G, uint8_t col_B);
   bool Scroller_8x16_RtoL4line(uint8_t y0, uint8_t num, uint8_t Zen_or_Han, uint8_t fnt_buf[2][16], uint8_t col_R, uint8_t col_G, uint8_t col_B);
   bool Scroller_8x16_RtoL4line(uint8_t y0, uint8_t num, uint8_t Zen_or_Han, uint8_t *SclCnt, uint8_t *ZorHcnt, uint8_t fnt_buf[2][16], uint8_t col_R, uint8_t col_G, uint8_t col_B);
+  bool Scroller_8x16_RtoL4line(uint8_t CS_pin, uint8_t y0, uint8_t num, uint8_t Zen_or_Han, uint8_t *SclCnt, uint8_t *ZorHcnt, uint8_t fnt_buf[2][16], uint8_t col_R, uint8_t col_G, uint8_t col_B);
 
   void Copy_Scroll(uint8_t y0, uint8_t buf[16], uint8_t scl_cnt2, uint8_t col_R, uint8_t col_G, uint8_t col_B);
 

@@ -1,6 +1,6 @@
 /*
   ESP32_SSD1331.cpp - for Arduino core for the ESP32 ( Use SPI library ).
-  Beta version 1.4
+  Beta version 1.5
   
 The MIT License (MIT)
 
@@ -45,7 +45,11 @@ SPIClass spi(HSPI);
 
 //************ SSD1331 初期化 ****************************************
 void ESP32_SSD1331::SSD1331_Init(){
+  ESP32_SSD1331::SSD1331_Init(true, 0, 0, 0);
+}
 
+//************ SSD1331 初期化 ****************************************
+void ESP32_SSD1331::SSD1331_Init(bool bl, uint8_t cs1, uint8_t cs2, uint8_t cs3){
   pinMode(_rst, OUTPUT); //RES
   pinMode(_dc, OUTPUT); //DC
 
@@ -56,10 +60,31 @@ void ESP32_SSD1331::SSD1331_Init(){
 
   digitalWrite(_dc, HIGH);
 
-  spi.begin(_sck, _miso, _mosi, _cs);
+  if(bl == false){
+    spi.begin(_sck, _miso, _mosi, -1);
+  }else{
+    spi.begin(_sck, _miso, _mosi, _cs);
+  }
+  
   spi.setFrequency(7000000); //SSD1331 のSPI Clock Cycle Time 最低150ns
   spi.setDataMode(SPI_MODE3);
-  spi.setHwCs(true);
+  spi.setHwCs(bl);
+  
+  if(cs1 > 0){
+    pinMode(cs1, OUTPUT);
+    digitalWrite(cs1, HIGH);
+    digitalWrite(cs1, LOW);
+  }
+  if(cs2 > 0){
+    pinMode(cs2, OUTPUT);
+    digitalWrite(cs2, HIGH);
+    digitalWrite(cs2, LOW);
+  }
+  if(cs3 > 0){
+    pinMode(cs3, OUTPUT);
+    digitalWrite(cs3, HIGH);
+    digitalWrite(cs3, LOW);
+  }
 
   CommandWrite(0xAE); //Set Display Off
   CommandWrite(0xA0); //Remap & Color Depth setting　
@@ -113,6 +138,16 @@ void ESP32_SSD1331::SSD1331_Init(){
   }
 
   CommandWrite(0xAF); //Set Display On
+  
+  if(cs1 > 0){
+    digitalWrite(cs1, HIGH);
+  }
+  if(cs2 > 0){
+    digitalWrite(cs2, HIGH);
+  }
+  if(cs3 > 0){
+    digitalWrite(cs3, HIGH);
+  }
   delay(110); //ディスプレイONコマンドの後は最低100ms 必要
 }
 //*********** HSPI 通信送信 ***********************************
@@ -136,6 +171,7 @@ void ESP32_SSD1331::DataWriteBytes(uint8_t *b, uint16_t n){
   digitalWrite(_dc, HIGH);//DC
   spi.writeBytes(b, n);
 }
+
 //***********画面明るさ********************************
 void ESP32_SSD1331::Brightness(uint8_t brightness){
   CommandWrite(0x81); //Set Contrast for Color A
@@ -170,6 +206,16 @@ void ESP32_SSD1331::Brightness_FadeOut(uint8_t interval){
   }
 }
 //***********ディスプレイ消去***************************
+void ESP32_SSD1331::Display_Clear(uint8_t cs, uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1){
+  spi.setFrequency(7000000); //SSD1331 のSPI Clock Cycle Time 最低150ns
+  spi.setDataMode(SPI_MODE3);
+  //spi.setHwCs(bl);
+  digitalWrite(cs, LOW);
+  ESP32_SSD1331::Display_Clear(x0, y0, x1, y1);
+  digitalWrite(cs, HIGH);
+}
+
+//***********ディスプレイ消去***************************
 void ESP32_SSD1331::Display_Clear(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1){
   //delayMicroseconds(500); //クリアーコマンドは400μs 以上の休止期間が必要かも
   delay(1);
@@ -192,6 +238,12 @@ void ESP32_SSD1331::SSD1331_Copy(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1,
   CommandWriteBytes(buf, sizeof(buf)); 
   //delayMicroseconds(500);
   delay(1);
+}
+//********* OLED 8x16フォント出力 ********************
+void ESP32_SSD1331::SSD1331_8x16_Font_DisplayOut(uint8_t cs, uint8_t txtMax, uint8_t x0, uint8_t y0, uint8_t red, uint8_t green, uint8_t blue, uint8_t Fnt[][16]){
+  digitalWrite(cs, LOW);
+  ESP32_SSD1331::SSD1331_8x16_Font_DisplayOut(txtMax, x0, y0, red, green, blue, Fnt);
+  digitalWrite(cs, HIGH);
 }
 //********* OLED 8x16フォント出力 ********************
 void ESP32_SSD1331::SSD1331_8x16_Font_DisplayOut(uint8_t txtMax, uint8_t x0, uint8_t y0, uint8_t red, uint8_t green, uint8_t blue, uint8_t Fnt[][16]){
@@ -636,7 +688,22 @@ bool ESP32_SSD1331::Scroller_8x16_RtoL4line(uint8_t y0, uint8_t num, uint8_t Zen
 
   return false;
 }
+//********************************************************
+bool ESP32_SSD1331::Scroller_8x16_RtoL4line(uint8_t CS_pin, uint8_t y0, uint8_t num, uint8_t Zen_or_Han, uint8_t *SclCnt, uint8_t *ZorHcnt, uint8_t fnt_buf[2][16], uint8_t col_R, uint8_t col_G, uint8_t col_B){
+  spi.setFrequency(7000000); //SSD1331 のSPI Clock Cycle Time 最低150ns
+  spi.setDataMode(SPI_MODE3);
+  //spi.setHwCs(bl);
+  
+  bool ret;
 
+  digitalWrite(CS_pin, LOW);
+  ret = ESP32_SSD1331::Scroller_8x16_RtoL4line(y0, num, Zen_or_Han, SclCnt, ZorHcnt, fnt_buf, col_R, col_G, col_B);
+  digitalWrite(CS_pin, HIGH);
+
+  return ret;
+}
+
+//********************************************************
 bool ESP32_SSD1331::Scroller_8x16_RtoL4line(uint8_t y0, uint8_t num, uint8_t Zen_or_Han, uint8_t *SclCnt, uint8_t *ZorHcnt, uint8_t fnt_buf[2][16], uint8_t col_R, uint8_t col_G, uint8_t col_B){
 
   Copy_Scroll(y0, fnt_buf[*ZorHcnt], *SclCnt, col_R, col_G, col_B);
