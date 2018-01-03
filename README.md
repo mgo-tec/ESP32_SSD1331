@@ -1,6 +1,6 @@
 # ESP32_SSD1331
 This is Arduino core for the ESP32 library ( SPI ).  
-Beta ver 1.5
+Beta ver 1.6
 HSPI only.  
   
 (example)  
@@ -14,6 +14,9 @@ RST------GPIO #4
 Use SPI.h library  
   
 # Change log
+(1.6)  
+Added scroll function of double frame display of 16x16 font.  
+  
 (1.5)  
 The following function enabled to switch the device with CS pin  
 - SSD1331_8x16_Font_DisplayOut  
@@ -38,6 +41,15 @@ Corrected scroll function of electric bulletin board.
 - Scroller_8x16_RtoL  
   
 【更新履歴】(Japanese)  
+(1.6)  
+東雲フォントの倍角表示スクロールができるようになりました。  
+主に以下の関数を追加。  
+- SizeUp_8x16_Font_DisplayOut  
+- HVsizeUp_8x16_Font_DisplayOut  
+- SizeUp_Scroller_8x16_RtoL  
+- HVsizeUp_Scroller_8x16_RtoL  
+- HVsizeUp_Vscroller_16x16  
+  
 (1.5)  
 次の関数をCSピンでデバイスを切り替えられるようにしました。  
 - SSD1331_8x16_Font_DisplayOut  

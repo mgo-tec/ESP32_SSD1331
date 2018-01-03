@@ -23,3 +23,10 @@ Drawing_Circle_Line_65kColor	KEYWORD2
 Drawing_Circle_Fill	KEYWORD2
 Scroller_8x16_RtoL	KEYWORD2
 Scroller_8x16_RtoL4line	KEYWORD2
+SizeUp_8x16_Font_DisplayOut	KEYWORD2
+HVsizeUp_8x16_Font_DisplayOut	KEYWORD2
+SizeUp_Scroller_8x16_RtoL	KEYWORD2
+HVsizeUp_Scroller_8x16_RtoL	KEYWORD2
+SizeUp_Copy_Scroll	KEYWORD2
+HVsizeUp_Vscroller_16x16	KEYWORD2
+SizeUp_Copy_V_Scroll	KEYWORD2

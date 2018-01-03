@@ -1,6 +1,6 @@
 /*
   ESP32_SSD1331.h - for Arduino core for the ESP32 ( Use SPI library ).
-  Beta version 1.5
+  Beta version 1.6
   
 The MIT License (MIT)
 
@@ -45,8 +45,8 @@ private:
   uint8_t _cs;
   uint8_t _dc;
   uint8_t _rst;
-  uint8_t _scl_cnt[4] = {};
-  uint8_t _ZorH_cnt[4] = {};
+  uint8_t _scl_cnt[6] = {};
+  uint8_t _ZorH_cnt[6] = {};
 
 public:
   ESP32_SSD1331(uint8_t sck, uint8_t miso, uint8_t mosi, uint8_t cs, uint8_t dc, uint8_t rst);
@@ -65,6 +65,10 @@ public:
   void SSD1331_Copy(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t X, uint8_t Y);
   void SSD1331_8x16_Font_DisplayOut(uint8_t txtMax, uint8_t x0, uint8_t y0, uint8_t red, uint8_t green, uint8_t blue, uint8_t Fnt[][16]);
   void SSD1331_8x16_Font_DisplayOut(uint8_t cs, uint8_t txtMax, uint8_t x0, uint8_t y0, uint8_t red, uint8_t green, uint8_t blue, uint8_t Fnt[][16]);
+  
+  void SizeUp_8x16_Font_DisplayOut(uint8_t Size, uint8_t txtMax, uint8_t x0, uint8_t y0, uint8_t red, uint8_t green, uint8_t blue, uint8_t Fnt[][16]);
+  void HVsizeUp_8x16_Font_DisplayOut(uint8_t H_Size, uint8_t V_Size, uint8_t txtMax, uint8_t x0, uint8_t y0, uint8_t red, uint8_t green, uint8_t blue, uint8_t Fnt[][16]);
+
   void SSD1331_8x8_Font_DisplayOut(uint8_t txtMax, uint8_t x0, uint8_t y0, uint8_t red, uint8_t green, uint8_t blue, uint8_t Fnt[][8]);
   void Time_Copy_V_Scroll(uint8_t Direction, uint8_t ZorH, uint8_t buf[2][16], uint8_t *SclCnt, uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t col_R, uint8_t col_G, uint8_t col_B);
   void Time_Copy_H_Scroll(uint8_t Direction, uint8_t ZorH, uint8_t buf[2][16], uint8_t *SclCnt, uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t col_R, uint8_t col_G, uint8_t col_B);
@@ -76,12 +80,22 @@ public:
   void Drawing_Circle_Line_256color(uint8_t x0, uint8_t y0, uint16_t r, uint8_t Line_R, uint8_t Line_G, uint8_t Line_B);
   void Drawing_Circle_Line_65kColor(uint8_t x0, uint8_t y0, uint16_t r, uint8_t Line_R, uint8_t Line_G, uint8_t Line_B);
   void Drawing_Circle_Fill(uint8_t x0, uint8_t y0, uint16_t r, uint8_t Line_R, uint8_t Line_G, uint8_t Line_B);
-  bool Scroller_8x16_RtoL(uint8_t y0, uint8_t Zen_or_Han, uint8_t fnt_buf[16], uint8_t *scl_cnt1, uint8_t *ZorH_cnt, uint8_t col_R, uint8_t col_G, uint8_t col_B);
-  bool Scroller_8x16_RtoL4line(uint8_t y0, uint8_t num, uint8_t Zen_or_Han, uint8_t fnt_buf[2][16], uint8_t col_R, uint8_t col_G, uint8_t col_B);
-  bool Scroller_8x16_RtoL4line(uint8_t y0, uint8_t num, uint8_t Zen_or_Han, uint8_t *SclCnt, uint8_t *ZorHcnt, uint8_t fnt_buf[2][16], uint8_t col_R, uint8_t col_G, uint8_t col_B);
-  bool Scroller_8x16_RtoL4line(uint8_t CS_pin, uint8_t y0, uint8_t num, uint8_t Zen_or_Han, uint8_t *SclCnt, uint8_t *ZorHcnt, uint8_t fnt_buf[2][16], uint8_t col_R, uint8_t col_G, uint8_t col_B);
 
+  bool Scroller_8x16_RtoL(uint8_t y0, uint8_t Zen_or_Han, uint8_t fnt_buf[16], uint8_t *scl_cnt1, uint8_t *ZorH_cnt, uint8_t col_R, uint8_t col_G, uint8_t col_B);
+  bool Scroller_8x16_RtoL4line(uint8_t CS_pin, uint8_t y0, uint8_t num, uint8_t Zen_or_Han, uint8_t *SclCnt, uint8_t *ZorHcnt, uint8_t fnt_buf[][16], uint8_t col_R, uint8_t col_G, uint8_t col_B);
+  bool Scroller_8x16_RtoL4line(uint8_t y0, uint8_t num, uint8_t Zen_or_Han, uint8_t *SclCnt, uint8_t *ZorHcnt, uint8_t fnt_buf[][16], uint8_t col_R, uint8_t col_G, uint8_t col_B);
+  bool Scroller_8x16_RtoL4line(uint8_t y0, uint8_t num, uint8_t Zen_or_Han, uint8_t fnt_buf[][16], uint8_t col_R, uint8_t col_G, uint8_t col_B);
+  
+  bool SizeUp_Scroller_8x16_RtoL(uint8_t Size, uint8_t y0, uint8_t num, uint8_t Zen_or_Han, uint8_t fnt_buf[][16], uint8_t col_R, uint8_t col_G, uint8_t col_B);
+  bool SizeUp_Scroller_8x16_RtoL(uint8_t Size, uint8_t x0, uint8_t x1, uint8_t y0, uint8_t num, uint8_t Zen_or_Han, uint8_t fnt_buf[][16], uint8_t col_R, uint8_t col_G, uint8_t col_B);
+  bool HVsizeUp_Scroller_8x16_RtoL(uint8_t H_Size, uint8_t V_Size, uint8_t x0, uint8_t x1, uint8_t y0, uint8_t num, uint8_t Zen_or_Han, uint8_t fnt_buf[][16], uint8_t col_R, uint8_t col_G, uint8_t col_B);
+
+  void SizeUp_Copy_Scroll(uint8_t Size, uint8_t y0, uint8_t buf[16], uint8_t scl_cnt2, uint8_t col_R, uint8_t col_G, uint8_t col_B);
+  void SizeUp_Copy_Scroll(uint8_t Size, uint8_t x0, uint8_t x1, uint8_t y0, uint8_t buf[16], uint8_t scl_cnt2, uint8_t col_R, uint8_t col_G, uint8_t col_B);
   void Copy_Scroll(uint8_t y0, uint8_t buf[16], uint8_t scl_cnt2, uint8_t col_R, uint8_t col_G, uint8_t col_B);
+
+  bool HVsizeUp_Vscroller_16x16(uint8_t H_Size, uint8_t V_Size, uint8_t Direction, uint8_t x0, uint8_t y0, uint8_t y1, uint8_t num, uint8_t Zen_or_Han, uint8_t fnt_buf[][16], uint8_t col_R, uint8_t col_G, uint8_t col_B);
+  void SizeUp_Copy_V_Scroll(uint8_t Direction, uint8_t ZorH, uint8_t buf[2][16], uint8_t SclCnt, uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t col_R, uint8_t col_G, uint8_t col_B);
 
 };
 
