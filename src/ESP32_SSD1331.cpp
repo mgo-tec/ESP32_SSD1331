@@ -1,6 +1,6 @@
 /*
   ESP32_SSD1331.cpp - for Arduino core for the ESP32 ( Use SPI library ).
-  Beta version 1.6
+  Beta version 1.7
   
 The MIT License (MIT)
 
@@ -260,7 +260,7 @@ void ESP32_SSD1331::SSD1331_8x16_Font_DisplayOut(uint8_t txtMax, uint8_t x0, uin
     com[4] = y0;
     com[5] = y0 + 15;
 
-  CommandWriteBytes(com, sizeof(com));
+  CommandWriteBytes(com, 6);
 
   int i, j, k;
   uint8_t bt = 0b10000000;
@@ -272,12 +272,8 @@ void ESP32_SSD1331::SSD1331_8x16_Font_DisplayOut(uint8_t txtMax, uint8_t x0, uin
 
   for(i=0; i<16; i++){
     for(j=0; j<txtMax; j++){
-      bt = 0b10000000;
       for(k=0; k<8; k++){
-        if(k>0){
-          bt = bt >> 1;
-        }
-        if( (Fnt[j][i] & bt) ){
+        if( Fnt[j][i] & (bt >> k) ){
           dummy[cnt] = Dot;
         }else{
           dummy[cnt] = 0;
@@ -331,14 +327,9 @@ void ESP32_SSD1331::HVsizeUp_8x16_Font_DisplayOut(uint8_t H_Size, uint8_t V_Size
 
   uint8_t size_cnt=0;
   for(i=0; i<16; i++){
-
       for(j=0; j<txtMax; j++){
-        bt = 0b10000000;
         for(k=0; k<8; k++){
-          if(k>0){
-            bt = bt >> 1;
-          }
-          if( (Fnt[j][i] & bt) ){
+          if( Fnt[j][i] & (bt >> k) ){
             for(ii=0; ii<H_Size; ii++){
               dummy[i][cnt++] = Dot;
             }
@@ -348,7 +339,6 @@ void ESP32_SSD1331::HVsizeUp_8x16_Font_DisplayOut(uint8_t H_Size, uint8_t V_Size
         }
       }
       cnt = 0;
-
   }
   //digitalWrite(_dc, LOW);//DC
 
@@ -386,12 +376,8 @@ void ESP32_SSD1331::SSD1331_8x8_Font_DisplayOut(uint8_t txtMax, uint8_t x0, uint
 
   for(i=0; i<8; i++){
     for(j=0; j<txtMax; j++){
-      bt = 0b10000000;
       for(k=0; k<8; k++){
-        if(k>0){
-          bt = bt >> 1;
-        }
-        if((Fnt[j][i] & bt)>0){
+        if( Fnt[j][i] & (bt >> k) ){
           dummy[cnt] = Dot;
         }else{
           dummy[cnt] = 0;
@@ -405,7 +391,7 @@ void ESP32_SSD1331::SSD1331_8x8_Font_DisplayOut(uint8_t txtMax, uint8_t x0, uint
 }
 //*********** 時刻垂直スクロール ****************
 void ESP32_SSD1331::Time_Copy_V_Scroll(uint8_t Direction, uint8_t ZorH, uint8_t buf[2][16], uint8_t *SclCnt, uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t col_R, uint8_t col_G, uint8_t col_B){
-  ESP32_SSD1331::SizeUp_Copy_V_Scroll(Direction, ZorH, buf, *SclCnt, x0, y0, x1, y1, col_R, col_G, col_B);
+  ESP32_SSD1331::SizeUp_Copy_V_Scroll(false, 1, Direction, ZorH, buf, *SclCnt, x0, y0, y1, col_R, col_G, col_B);
   (*SclCnt)++;
 }
 //*********** 時刻水平スクロール **********************
@@ -718,20 +704,24 @@ bool ESP32_SSD1331::Scroller_8x16_RtoL4line(uint8_t y0, uint8_t num, uint8_t Zen
 }
 //*********電光掲示板風スクロール 8x16ドット********************
 bool ESP32_SSD1331::Scroller_8x16_RtoL4line(uint8_t y0, uint8_t num, uint8_t Zen_or_Han, uint8_t fnt_buf[][16], uint8_t col_R, uint8_t col_G, uint8_t col_B){
-  return ESP32_SSD1331::HVsizeUp_Scroller_8x16_RtoL(1, 1, 0, 95, y0, num, Zen_or_Han, fnt_buf, col_R, col_G, col_B);
+  return ESP32_SSD1331::HVsizeUp_Scroller_8x16_RtoL(false, 1, 1, 0, 95, y0, num, Zen_or_Han, fnt_buf, col_R, col_G, col_B);
 }
 //*********電光掲示板風スクロール 8x16ドット サイズアップ********************
 bool ESP32_SSD1331::SizeUp_Scroller_8x16_RtoL(uint8_t Size, uint8_t y0, uint8_t num, uint8_t Zen_or_Han, uint8_t fnt_buf[][16], uint8_t col_R, uint8_t col_G, uint8_t col_B){
-  return ESP32_SSD1331::HVsizeUp_Scroller_8x16_RtoL(Size, Size, 0, 95, y0, num, Zen_or_Han, fnt_buf, col_R, col_G, col_B);
+  return ESP32_SSD1331::HVsizeUp_Scroller_8x16_RtoL(false, Size, Size, 0, 95, y0, num, Zen_or_Han, fnt_buf, col_R, col_G, col_B);
 }
 //*********電光掲示板風スクロール 8x16ドット 全角サイズアップ********************
 bool ESP32_SSD1331::SizeUp_Scroller_8x16_RtoL(uint8_t Size, uint8_t x0, uint8_t x1, uint8_t y0, uint8_t num, uint8_t Zen_or_Han, uint8_t fnt_buf[][16], uint8_t col_R, uint8_t col_G, uint8_t col_B){
-  return ESP32_SSD1331::HVsizeUp_Scroller_8x16_RtoL(Size, Size, x0, x1, y0, num, Zen_or_Han, fnt_buf, col_R, col_G, col_B);
+  return ESP32_SSD1331::HVsizeUp_Scroller_8x16_RtoL(false, Size, Size, x0, x1, y0, num, Zen_or_Han, fnt_buf, col_R, col_G, col_B);
 }
 //*********電光掲示板風スクロール 8x16ドット 縦、横サイズアップ********************
 bool ESP32_SSD1331::HVsizeUp_Scroller_8x16_RtoL(uint8_t H_Size, uint8_t V_Size, uint8_t x0, uint8_t x1, uint8_t y0, uint8_t num, uint8_t Zen_or_Han, uint8_t fnt_buf[][16], uint8_t col_R, uint8_t col_G, uint8_t col_B){
+  return ESP32_SSD1331::HVsizeUp_Scroller_8x16_RtoL(false, H_Size, V_Size, x0, x1, y0, num, Zen_or_Han, fnt_buf, col_R, col_G, col_B);
+}
+//*********電光掲示板風スクロール 8x16ドット 縦、横サイズアップ********************
+bool ESP32_SSD1331::HVsizeUp_Scroller_8x16_RtoL(boolean Reverse, uint8_t H_Size, uint8_t V_Size, uint8_t x0, uint8_t x1, uint8_t y0, uint8_t num, uint8_t Zen_or_Han, uint8_t fnt_buf[][16], uint8_t col_R, uint8_t col_G, uint8_t col_B){
   for(int i=0; i<H_Size; i++){
-    ESP32_SSD1331::SizeUp_Copy_Scroll(V_Size, x0, x1, y0, fnt_buf[_ZorH_cnt[num]], _scl_cnt[num], col_R, col_G, col_B);
+    ESP32_SSD1331::SizeUp_Copy_Scroll(Reverse, V_Size, x0, x1, y0, fnt_buf[_ZorH_cnt[num]], _scl_cnt[num], col_R, col_G, col_B);
   }
   _scl_cnt[num]++;
 
@@ -753,13 +743,17 @@ bool ESP32_SSD1331::HVsizeUp_Scroller_8x16_RtoL(uint8_t H_Size, uint8_t V_Size, 
 
   return false;
 }
-
 //***************************
-void ESP32_SSD1331::SizeUp_Copy_Scroll(uint8_t Size, uint8_t y0, uint8_t buf[16], uint8_t scl_cnt2, uint8_t col_R, uint8_t col_G, uint8_t col_B){
-  ESP32_SSD1331::SizeUp_Copy_Scroll(Size, 0, 95, y0, buf, scl_cnt2, col_R, col_G, col_B);
+void ESP32_SSD1331::Copy_Scroll(uint8_t y0, uint8_t buf[16], uint8_t scl_cnt2, uint8_t col_R, uint8_t col_G, uint8_t col_B){
+  ESP32_SSD1331::SizeUp_Copy_Scroll(false, 1, 0, 95, y0, buf, scl_cnt2, col_R, col_G, col_B);
 }
 //***************************
-void ESP32_SSD1331::SizeUp_Copy_Scroll(uint8_t Size, uint8_t x0, uint8_t x1, uint8_t y0, uint8_t buf[16], uint8_t scl_cnt2, uint8_t col_R, uint8_t col_G, uint8_t col_B){
+void ESP32_SSD1331::SizeUp_Copy_Scroll(uint8_t Size, uint8_t y0, uint8_t buf[16], uint8_t scl_cnt2, uint8_t col_R, uint8_t col_G, uint8_t col_B){
+  ESP32_SSD1331::SizeUp_Copy_Scroll(false, Size, 0, 95, y0, buf, scl_cnt2, col_R, col_G, col_B);
+}
+
+//***************************
+void ESP32_SSD1331::SizeUp_Copy_Scroll(boolean Reverse, uint8_t Size, uint8_t x0, uint8_t x1, uint8_t y0, uint8_t buf[16], uint8_t scl_cnt2, uint8_t col_R, uint8_t col_G, uint8_t col_B){
   if(Size > 4) Size = 4;
   uint8_t Dot = (col_R << 5) | (col_G << 2) | col_B;
 
@@ -785,9 +779,15 @@ void ESP32_SSD1331::SizeUp_Copy_Scroll(uint8_t Size, uint8_t x0, uint8_t x1, uin
   uint8_t Dot_write_cnt = 0;
   uint8_t font_read_cnt = 0;
   uint8_t i;
+  uint8_t f_buf = 0;
   
   for(font_read_cnt=0; font_read_cnt<16; font_read_cnt++){
-    if( (buf[font_read_cnt] & bbb) ){
+    if(Reverse){
+      f_buf = ~buf[font_read_cnt];
+    }else{
+      f_buf = buf[font_read_cnt];
+    }
+    if( f_buf & bbb ){
       for(i=0; i<Size; i++){
         DotDot[Dot_write_cnt++] = Dot;
       }
@@ -801,15 +801,14 @@ void ESP32_SSD1331::SizeUp_Copy_Scroll(uint8_t Size, uint8_t x0, uint8_t x1, uin
   DataWriteBytes(DotDot, max_size);
 }
 
-//***************************
-void ESP32_SSD1331::Copy_Scroll(uint8_t y0, uint8_t buf[16], uint8_t scl_cnt2, uint8_t col_R, uint8_t col_G, uint8_t col_B){
-  ESP32_SSD1331::SizeUp_Copy_Scroll(1, 0, 95, y0, buf, scl_cnt2, col_R, col_G, col_B);
-}
-//*********電光掲示板風スクロール 16x16ドット 縦、横サイズアップ、縦方向スクロール********************
+//********* 16x16ドット スクロール（全角限定）縦、横サイズアップ********************
 bool ESP32_SSD1331::HVsizeUp_Vscroller_16x16(uint8_t H_Size, uint8_t V_Size, uint8_t Direction, uint8_t x0, uint8_t y0, uint8_t y1, uint8_t num, uint8_t Zen_or_Han, uint8_t fnt_buf[][16], uint8_t col_R, uint8_t col_G, uint8_t col_B){
-  uint8_t x1 = x0 + 16*H_Size - 1;
+  return ESP32_SSD1331::HVsizeUp_Vscroller_16x16(false, H_Size, V_Size, Direction, x0, y0, y1, num, Zen_or_Han, fnt_buf, col_R, col_G, col_B);
+}
+//*********　16x16ドット スクロール（全角限定）縦、横サイズアップ、縦方向スクロール********************
+bool ESP32_SSD1331::HVsizeUp_Vscroller_16x16(boolean Reverse, uint8_t H_Size, uint8_t V_Size, uint8_t Direction, uint8_t x0, uint8_t y0, uint8_t y1, uint8_t num, uint8_t Zen_or_Han, uint8_t fnt_buf[][16], uint8_t col_R, uint8_t col_G, uint8_t col_B){
   for(int i=0; i<V_Size; i++){
-    ESP32_SSD1331::SizeUp_Copy_V_Scroll(Direction, Zen_or_Han, fnt_buf, _scl_cnt[num], x0, y0, x1, y1, col_R, col_G, col_B);
+    ESP32_SSD1331::SizeUp_Copy_V_Scroll(Reverse, H_Size, Direction, Zen_or_Han, fnt_buf, _scl_cnt[num], x0, y0, y1, col_R, col_G, col_B);
   }
   _scl_cnt[num]++;
 
@@ -821,12 +820,13 @@ bool ESP32_SSD1331::HVsizeUp_Vscroller_16x16(uint8_t H_Size, uint8_t V_Size, uin
   return false;
 }
 //*********** 垂直スクロール ****************
-void ESP32_SSD1331::SizeUp_Copy_V_Scroll(uint8_t Direction, uint8_t ZorH, uint8_t buf[2][16], uint8_t SclCnt, uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t col_R, uint8_t col_G, uint8_t col_B){
+void ESP32_SSD1331::SizeUp_Copy_V_Scroll(boolean Reverse, uint8_t h_size, uint8_t Direction, uint8_t ZorH, uint8_t buf[][16], uint8_t SclCnt, uint8_t x0, uint8_t y0, uint8_t y1, uint8_t col_R, uint8_t col_G, uint8_t col_B){
   uint8_t Dot = (col_R << 5) | (col_G << 2) | col_B;
-  uint8_t i, k;
+  uint8_t i, j, k;
   uint8_t bbb = 0b10000000;
-  uint8_t DotDot[8 * ZorH];
+  uint8_t DotDot[8 * ZorH * h_size];
   uint8_t com[6];
+  uint8_t x1 = x0 + 8 * ZorH * h_size - 1;
 
   switch( Direction ){
     case 0:
@@ -847,31 +847,48 @@ void ESP32_SSD1331::SizeUp_Copy_V_Scroll(uint8_t Direction, uint8_t ZorH, uint8_
       break;
   }  
 
-  CommandWriteBytes(com, sizeof(com));
+  CommandWriteBytes(com, 6);
+  
+  uint8_t Dot_write_cnt = 0;
+  uint8_t f_buf = 0;
 
   switch( Direction ){
     case 0:
       for(k=0; k<ZorH; k++){
-        bbb = 0b10000000;
+        if(Reverse){
+          f_buf = ~buf[k][SclCnt];
+        }else{
+          f_buf = buf[k][SclCnt];
+        }
         for(i=0; i<8; i++){
-          if(i>0) bbb = bbb >> 1;
-          if( ( buf[k][SclCnt] & bbb ) ){
-            DotDot[i + k*8] = Dot;
+          if( f_buf & (bbb >> i) ){
+            for(j=0; j<h_size; j++){
+              DotDot[Dot_write_cnt++] = Dot;
+            }
           }else{
-            DotDot[i + k*8] = 0;
+            for(j=0; j<h_size; j++){
+              DotDot[Dot_write_cnt++] = 0;
+            }
           }
         }
       }
       break;
     case 1:
       for(k=0; k<ZorH; k++){
-        bbb = 0b10000000;
+        if(Reverse){
+          f_buf = ~buf[k][15-SclCnt];
+        }else{
+          f_buf = buf[k][15-SclCnt];
+        }
         for(i=0; i<8; i++){
-          if(i>0) bbb = bbb >> 1;
-          if( ( buf[k][15 - SclCnt] & bbb ) ){
-            DotDot[i + k*8] = Dot;
+          if( f_buf & (bbb >> i) ){
+            for(j=0; j<h_size; j++){
+              DotDot[Dot_write_cnt++] = Dot;
+            }
           }else{
-            DotDot[i + k*8] = 0;
+            for(j=0; j<h_size; j++){
+              DotDot[Dot_write_cnt++] = 0;
+            }
           }
         }
       }

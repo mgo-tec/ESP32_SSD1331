@@ -1,6 +1,6 @@
 # ESP32_SSD1331
 This is Arduino core for the ESP32 library ( SPI ).  
-Beta ver 1.6
+Beta ver 1.7
 HSPI only.  
   
 (example)  
@@ -14,6 +14,10 @@ RST------GPIO #4
 Use SPI.h library  
   
 # Change log
+(1.7)  
+16x16 font was made horizontally long size letters so that it can be scrolled vertically.  
+And we made it possible to invert characters in black and white.  
+  
 (1.6)  
 Added scroll function of double frame display of 16x16 font.  
   
@@ -41,6 +45,10 @@ Corrected scroll function of electric bulletin board.
 - Scroller_8x16_RtoL  
   
 【更新履歴】(Japanese)  
+(1.7)  
+東雲フォントを横長文字で、縦方向スクロールできるようにしました。  
+そして、文字を白黒反転できるようにしました。  
+  
 (1.6)  
 東雲フォントの倍角表示スクロールができるようになりました。  
 主に以下の関数を追加。  
