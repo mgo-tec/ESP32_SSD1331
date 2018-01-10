@@ -1,6 +1,6 @@
 /*
   ESP32_SSD1331.cpp - for Arduino core for the ESP32 ( Use SPI library ).
-  Beta version 1.7
+  Beta version 1.71
   
 The MIT License (MIT)
 
@@ -719,6 +719,17 @@ bool ESP32_SSD1331::HVsizeUp_Scroller_8x16_RtoL(uint8_t H_Size, uint8_t V_Size, 
   return ESP32_SSD1331::HVsizeUp_Scroller_8x16_RtoL(false, H_Size, V_Size, x0, x1, y0, num, Zen_or_Han, fnt_buf, col_R, col_G, col_B);
 }
 //*********電光掲示板風スクロール 8x16ドット 縦、横サイズアップ********************
+bool ESP32_SSD1331::HVsizeUp_Scroller_8x16_RtoL(boolean *Scl_Reset, boolean Reverse, uint8_t H_Size, uint8_t V_Size, uint8_t x0, uint8_t x1, uint8_t y0, uint8_t num, uint8_t Zen_or_Han, uint8_t fnt_buf[][16], uint8_t col_R, uint8_t col_G, uint8_t col_B){
+  if(*Scl_Reset){
+    _scl_cnt[num] = 0;
+    _ZorH_cnt[num] = 0;
+    *Scl_Reset = false;
+    return false;
+  }
+  return ESP32_SSD1331::HVsizeUp_Scroller_8x16_RtoL(Reverse, H_Size, V_Size, x0, x1, y0, num, Zen_or_Han, fnt_buf, col_R, col_G, col_B);
+
+}
+//*********電光掲示板風スクロール 8x16ドット 縦、横サイズアップ********************
 bool ESP32_SSD1331::HVsizeUp_Scroller_8x16_RtoL(boolean Reverse, uint8_t H_Size, uint8_t V_Size, uint8_t x0, uint8_t x1, uint8_t y0, uint8_t num, uint8_t Zen_or_Han, uint8_t fnt_buf[][16], uint8_t col_R, uint8_t col_G, uint8_t col_B){
   for(int i=0; i<H_Size; i++){
     ESP32_SSD1331::SizeUp_Copy_Scroll(Reverse, V_Size, x0, x1, y0, fnt_buf[_ZorH_cnt[num]], _scl_cnt[num], col_R, col_G, col_B);
@@ -774,7 +785,7 @@ void ESP32_SSD1331::SizeUp_Copy_Scroll(boolean Reverse, uint8_t Size, uint8_t x0
   
   uint8_t max_size = 16*Size;
 
-  uint8_t DotDot[max_size];
+  uint8_t DotDot[max_size] = {};
 
   uint8_t Dot_write_cnt = 0;
   uint8_t font_read_cnt = 0;
@@ -805,6 +816,15 @@ void ESP32_SSD1331::SizeUp_Copy_Scroll(boolean Reverse, uint8_t Size, uint8_t x0
 bool ESP32_SSD1331::HVsizeUp_Vscroller_16x16(uint8_t H_Size, uint8_t V_Size, uint8_t Direction, uint8_t x0, uint8_t y0, uint8_t y1, uint8_t num, uint8_t Zen_or_Han, uint8_t fnt_buf[][16], uint8_t col_R, uint8_t col_G, uint8_t col_B){
   return ESP32_SSD1331::HVsizeUp_Vscroller_16x16(false, H_Size, V_Size, Direction, x0, y0, y1, num, Zen_or_Han, fnt_buf, col_R, col_G, col_B);
 }
+//********* 16x16ドット スクロール（全角限定）縦、横サイズアップ********************
+bool ESP32_SSD1331::HVsizeUp_Vscroller_16x16(boolean *Scl_Reset, boolean Reverse, uint8_t H_Size, uint8_t V_Size, uint8_t Direction, uint8_t x0, uint8_t y0, uint8_t y1, uint8_t num, uint8_t Zen_or_Han, uint8_t fnt_buf[][16], uint8_t col_R, uint8_t col_G, uint8_t col_B){
+  if(*Scl_Reset){
+    _scl_cnt[num] = 0;
+    *Scl_Reset = false;
+    return false;
+  }
+  return ESP32_SSD1331::HVsizeUp_Vscroller_16x16(Reverse, H_Size, V_Size, Direction, x0, y0, y1, num, Zen_or_Han, fnt_buf, col_R, col_G, col_B);
+}
 //*********　16x16ドット スクロール（全角限定）縦、横サイズアップ、縦方向スクロール********************
 bool ESP32_SSD1331::HVsizeUp_Vscroller_16x16(boolean Reverse, uint8_t H_Size, uint8_t V_Size, uint8_t Direction, uint8_t x0, uint8_t y0, uint8_t y1, uint8_t num, uint8_t Zen_or_Han, uint8_t fnt_buf[][16], uint8_t col_R, uint8_t col_G, uint8_t col_B){
   for(int i=0; i<V_Size; i++){
@@ -824,7 +844,7 @@ void ESP32_SSD1331::SizeUp_Copy_V_Scroll(boolean Reverse, uint8_t h_size, uint8_
   uint8_t Dot = (col_R << 5) | (col_G << 2) | col_B;
   uint8_t i, j, k;
   uint8_t bbb = 0b10000000;
-  uint8_t DotDot[8 * ZorH * h_size];
+  uint8_t DotDot[8 * ZorH * h_size] = {};
   uint8_t com[6];
   uint8_t x1 = x0 + 8 * ZorH * h_size - 1;
 

@@ -1,6 +1,6 @@
 /*
   ESP32_SSD1331.h - for Arduino core for the ESP32 ( Use SPI library ).
-  Beta version 1.7
+  Beta version 1.71
   
 The MIT License (MIT)
 
@@ -89,6 +89,7 @@ public:
   bool SizeUp_Scroller_8x16_RtoL(uint8_t Size, uint8_t y0, uint8_t num, uint8_t Zen_or_Han, uint8_t fnt_buf[][16], uint8_t col_R, uint8_t col_G, uint8_t col_B);
   bool SizeUp_Scroller_8x16_RtoL(uint8_t Size, uint8_t x0, uint8_t x1, uint8_t y0, uint8_t num, uint8_t Zen_or_Han, uint8_t fnt_buf[][16], uint8_t col_R, uint8_t col_G, uint8_t col_B);
   bool HVsizeUp_Scroller_8x16_RtoL(uint8_t H_Size, uint8_t V_Size, uint8_t x0, uint8_t x1, uint8_t y0, uint8_t num, uint8_t Zen_or_Han, uint8_t fnt_buf[][16], uint8_t col_R, uint8_t col_G, uint8_t col_B);
+  bool HVsizeUp_Scroller_8x16_RtoL(boolean *Scl_Reset, boolean Reverse, uint8_t H_Size, uint8_t V_Size, uint8_t x0, uint8_t x1, uint8_t y0, uint8_t num, uint8_t Zen_or_Han, uint8_t fnt_buf[][16], uint8_t col_R, uint8_t col_G, uint8_t col_B);
   bool HVsizeUp_Scroller_8x16_RtoL(boolean Reverse, uint8_t H_Size, uint8_t V_Size, uint8_t x0, uint8_t x1, uint8_t y0, uint8_t num, uint8_t Zen_or_Han, uint8_t fnt_buf[][16], uint8_t col_R, uint8_t col_G, uint8_t col_B);
   void SizeUp_Copy_Scroll(boolean Reverse, uint8_t Size, uint8_t x0, uint8_t x1, uint8_t y0, uint8_t buf[16], uint8_t scl_cnt2, uint8_t col_R, uint8_t col_G, uint8_t col_B);
 
@@ -97,6 +98,7 @@ public:
   void SizeUp_Copy_Scroll(uint8_t Size, uint8_t x0, uint8_t x1, uint8_t y0, uint8_t buf[16], uint8_t scl_cnt2, uint8_t col_R, uint8_t col_G, uint8_t col_B);
 
   bool HVsizeUp_Vscroller_16x16(uint8_t H_Size, uint8_t V_Size, uint8_t Direction, uint8_t x0, uint8_t y0, uint8_t y1, uint8_t num, uint8_t Zen_or_Han, uint8_t fnt_buf[][16], uint8_t col_R, uint8_t col_G, uint8_t col_B);
+  bool HVsizeUp_Vscroller_16x16(boolean *Scl_Reset, boolean Reverse, uint8_t H_Size, uint8_t V_Size, uint8_t Direction, uint8_t x0, uint8_t y0, uint8_t y1, uint8_t num, uint8_t Zen_or_Han, uint8_t fnt_buf[][16], uint8_t col_R, uint8_t col_G, uint8_t col_B);
   bool HVsizeUp_Vscroller_16x16(boolean Reverse, uint8_t H_Size, uint8_t V_Size, uint8_t Direction, uint8_t x0, uint8_t y0, uint8_t y1, uint8_t num, uint8_t Zen_or_Han, uint8_t fnt_buf[][16], uint8_t col_R, uint8_t col_G, uint8_t col_B);
   void SizeUp_Copy_V_Scroll(boolean Reverse, uint8_t h_size, uint8_t Direction, uint8_t ZorH, uint8_t buf[][16], uint8_t SclCnt, uint8_t x0, uint8_t y0, uint8_t y1, uint8_t col_R, uint8_t col_G, uint8_t col_B);
 
